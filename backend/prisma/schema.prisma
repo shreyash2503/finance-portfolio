@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model User {
-  id            Int          @id @default(autoincrement())
+  id            String       @id @default(uuid()) // Unique ID for each user
   email         String       @unique                      // User's email, unique for login
   passwordHash  String       
   portfolios    Portfolio[]  
@@ -25,10 +25,10 @@ model User {
 
 // Defines the Portfolio model
 model Portfolio {
-  id            Int          @id @default(autoincrement()) 
+  id            String       @id @default(uuid()) 
   name          String       
   description   String?      
-  userId        Int         
+  userId        String       
   user          User         @relation(fields: [userId], references: [id]) 
   items         PortfolioItem[] 
   performances  PortfolioPerformance[] 
@@ -38,12 +38,12 @@ model Portfolio {
 
 // Defines the PortfolioItem model
 model PortfolioItem {
-  id            Int          @id @default(autoincrement()) // Unique ID for each item
+  id            String       @id @default(uuid()) // Unique ID for each item
   name          String      
   symbol        String      
   quantity      Float        
   price         Float        
-  portfolioId   Int         
+  portfolioId   String       
   portfolio     Portfolio    @relation(fields: [portfolioId], references: [id]) // Relationship to Portfolio
   // transactions  Transaction[] // One-to-many relationship with Transaction
   createdAt     DateTime     @default(now())              
@@ -65,11 +65,12 @@ model PortfolioItem {
 
 // Optional: User can also track the performance of their portfolios
 model PortfolioPerformance {
-  id            Int          @id @default(autoincrement()) 
-  portfolioId   Int          
+  id            String          @id @default(uuid()) 
+  portfolioId   String       
   portfolio     Portfolio    @relation(fields: [portfolioId], references: [id]) 
   date          DateTime    
   totalValue    Float       
   createdAt     DateTime     @default(now())            
   updatedAt     DateTime     @updatedAt                   
 }
+
