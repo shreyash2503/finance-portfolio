@@ -10,6 +10,66 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+model User {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique                      // User's email, unique for login
+  passwordHash  String       
+  portfolios    Portfolio[]  
+  createdAt     DateTime     @default(now())              
+  updatedAt     DateTime     @updatedAt                   
+  jwtToken      String?     
+}
+
+// Defines the Portfolio model
+model Portfolio {
+  id            Int          @id @default(autoincrement()) 
+  name          String       
+  description   String?      
+  userId        Int         
+  user          User         @relation(fields: [userId], references: [id]) 
+  items         PortfolioItem[] 
+  performances  PortfolioPerformance[] 
+  createdAt     DateTime     @default(now())              
+  updatedAt     DateTime     @updatedAt                  
+}
+
+// Defines the PortfolioItem model
+model PortfolioItem {
+  id            Int          @id @default(autoincrement()) // Unique ID for each item
+  name          String      
+  symbol        String      
+  quantity      Float        
+  price         Float        
+  portfolioId   Int         
+  portfolio     Portfolio    @relation(fields: [portfolioId], references: [id]) // Relationship to Portfolio
+  // transactions  Transaction[] // One-to-many relationship with Transaction
+  createdAt     DateTime     @default(now())              
+  updatedAt     DateTime     @updatedAt                  
+}
+
+// This model will store information about transactions (buy/sell operations)
+// model Transaction {
+//   id              Int          @id @default(autoincrement()) // Unique ID for each transaction
+//   portfolioItemId Int        // Foreign key to PortfolioItem model
+//   portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id]) // Relationship to PortfolioItem
+//   action          String       // Action type: 'BUY' or 'SELL'
+//   quantity        Float        // Quantity of assets in the transaction
+//   price           Float        // Price at the time of the transaction
+//   date            DateTime     @default(now())              // Transaction date
+//   createdAt       DateTime     @default(now())              // Creation timestamp
+//   updatedAt       DateTime     @updatedAt                   // Last updated timestamp
+// }
+
+// Optional: User can also track the performance of their portfolios
+model PortfolioPerformance {
+  id            Int          @id @default(autoincrement()) 
+  portfolioId   Int          
+  portfolio     Portfolio    @relation(fields: [portfolioId], references: [id]) 
+  date          DateTime    
+  totalValue    Float       
+  createdAt     DateTime     @default(now())            
+  updatedAt     DateTime     @updatedAt                   
 }
