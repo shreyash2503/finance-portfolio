@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -20,7 +19,7 @@ model User {
   portfolios    Portfolio[]  
   createdAt     DateTime     @default(now())              
   updatedAt     DateTime     @updatedAt                   
-  jwtToken      String?     
+  jwtToken      String?      @db.Text 
 }
 
 // Defines the Portfolio model
