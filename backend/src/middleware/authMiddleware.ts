@@ -32,6 +32,7 @@ export function authenticateJWT(
     if (user && typeof user === "object" && "userId" in user) {
       logger.info("JWT auth success", { userId: (user as any).userId });
     } else {
+      // TO DO: Check this else statement
       logger.info("JWT auth success", { user });
     }
     req.user = user;

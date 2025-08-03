@@ -1,7 +1,10 @@
 import express from "express";
-import authRoutes from "./routes/authRoutes";
+import authRoutes from "./routes/auth.routes";
 import logger from "./utils/logger";
 import { Request, Response, NextFunction } from "express";
+
+import portfolioRouter from "./routes/portfolio.routes";
+import portfolioItemRouter from "./routes/portfolioItems.routes";
 
 const app = express();
 
@@ -13,6 +16,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/v1/portfolio", portfolioRouter);
+app.use("/api/v1/portfolio-item", portfolioItemRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error(`Unhandled error: ${err.message}`, { stack: err.stack });
