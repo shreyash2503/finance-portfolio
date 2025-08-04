@@ -5,6 +5,8 @@ import { Request, Response, NextFunction } from "express";
 
 import portfolioRouter from "./routes/portfolio.routes";
 import portfolioItemRouter from "./routes/portfolioItems.routes";
+import graphRouter from "./routes/graph.routes";
+import metricsRouter from "./metrics/client";
 
 const app = express();
 
@@ -14,10 +16,12 @@ app.use((req, res, next) => {
   logger.info(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
+app.use(metricsRouter);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/v1/portfolio", portfolioRouter);
 app.use("/api/v1/portfolio-item", portfolioItemRouter);
+app.use("/api/v1/graph", graphRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   logger.error(`Unhandled error: ${err.message}`, { stack: err.stack });
